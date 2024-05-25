@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import tkinter as tk
-from tkinter import filedialog
+from tkinter import filedialog, Toplevel, Label
 from PIL import Image, ImageTk, ImageDraw, ImageFont
 import os
 
@@ -9,8 +9,9 @@ class ImageNumberingApp:
     def __init__(self, root):
         self.root = root
         self.root.title("Image Numbering")
+        
+        # 아이콘 설정 (ico 파일 사용)
         self.root.iconbitmap("./favicon.ico")
-
         
         self.top_frame = tk.Frame(root)
         self.top_frame.pack(side=tk.TOP, fill=tk.X)
@@ -39,6 +40,10 @@ class ImageNumberingApp:
         self.size_label = tk.Label(self.status_frame, text="Circle Size: 15", bg="#444444", fg="white")
         self.size_label.pack(side=tk.RIGHT, padx=5)
 
+        # 만든이 버튼 추가
+        self.creator_button = tk.Button(self.status_frame, text="정보", command=self.show_creator_info)
+        self.creator_button.pack(side=tk.LEFT, padx=5)
+
         self.image = None
         self.tk_image = None
         self.original_image = None
@@ -49,12 +54,18 @@ class ImageNumberingApp:
         self.radius = 15
         self.preview_circle = None
 
+         # 사용법 레이블 추가
+        self.instructions = tk.Label(self.canvas, text="넘버링: 마우스 왼쪽\n취   소: 마우스 오른쪽", justify=tk.LEFT)
+        self.instructions.place(relx=0.5, rely=0.5, anchor=tk.CENTER)
+
+
         self.canvas.bind("<Button-1>", self.add_number)
         self.canvas.bind("<Motion>", self.update_preview_circle)
         self.canvas.bind("<Control-MouseWheel>", self.adjust_circle_size)
         self.root.bind('<Configure>', self.center_image)
 
     def open_image(self):
+        self.instructions.place_forget()
         file_path = filedialog.askopenfilename(filetypes=[("Image files", "*.jpg;*.jpeg;*.png;*.bmp;*.gif")])
         if file_path:
             self.original_image = Image.open(file_path)
@@ -183,6 +194,44 @@ class ImageNumberingApp:
         if self.preview_circle:
             self.canvas.delete(self.preview_circle)
         self.preview_circle = self.canvas.create_oval(event.x - self.radius, event.y - self.radius, event.x + self.radius, event.y + self.radius, outline="blue", width=1, dash=(3, 5))
+
+    def show_creator_info(self):
+        creator_window = Toplevel(self.root)
+        creator_window.title("Image Numbering Info")
+        creator_window.geometry("400x100")
+        creator_window.iconbitmap("./favicon.ico")
+
+
+        # 이미지 로드
+        img_path = "./in.png"  # 이미지 경로를 지정하세요
+        logo_image = Image.open(img_path)
+        logo_image = logo_image.resize((50, 50), Image.Resampling.LANCZOS)  # 이미지 크기 조정
+        logo_photo = ImageTk.PhotoImage(logo_image)
+
+        # 로고 레이블
+        logo_label = Label(creator_window, image=logo_photo)
+        logo_label.image = logo_photo  # 참조를 유지하기 위해 필요
+        logo_label.grid(row=0, column=0, rowspan=3, padx=10, pady=10)
+
+        # 텍스트 정보
+        info_text = (
+            "Image Numbering v0.0.1.0\n"
+            "jeonginfo@gmail.com\n"
+            "© 2024 jeongscom. All rights reserved."
+        )
+        info_label = Label(creator_window, text=info_text, justify=tk.LEFT)
+        info_label.grid(row=0, column=1,  rowspan=3, sticky="w", padx=10, pady=10)
+
+        # 확인 버튼
+        # ok_button = Button(creator_window, text="확인", command=creator_window.destroy)
+        # ok_button.grid(row=0, column=3, padx=10, pady=10)
+
+        # 링크 레이블
+        # link_label = Label(creator_window, text="Show Open Source License ↓", fg="blue", cursor="hand2")
+        # link_label.grid(row=1, column=1, columnspan=3, sticky="w", padx=10, pady=10)
+
+        creator_window.grid_rowconfigure(1, weight=1)
+        creator_window.grid_columnconfigure(1, weight=1)
 
 if __name__ == "__main__":
     root = tk.Tk()
