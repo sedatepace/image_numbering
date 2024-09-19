@@ -21,7 +21,7 @@ exe = EXE(
     a.scripts,
     a.binaries,
     a.datas,
-    [],
+    [('./favicon.ico','favicon.ico')],
     name='Image Numbering',
     debug=False,
     bootloader_ignore_signals=False,
@@ -35,5 +35,4 @@ exe = EXE(
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
-    icon=['in.png'],
 )

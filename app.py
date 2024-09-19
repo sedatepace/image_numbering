@@ -10,8 +10,9 @@ class ImageNumberingApp:
         self.root = root
         self.root.title("Image Numbering")
         
-        # 아이콘 설정 (ico 파일 사용)
-        self.root.iconbitmap("./favicon.ico")
+        
+        # # 아이콘 설정 (ico 파일 사용)
+        # self.root.iconbitmap("./favicon.ico")
         
         self.top_frame = tk.Frame(root)
         self.top_frame.pack(side=tk.TOP, fill=tk.X)
